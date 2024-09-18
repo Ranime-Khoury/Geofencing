@@ -1,6 +1,6 @@
 package com.example.geofencing
 
-//import LogsScreen
+import LogsScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
                     modifier = androidx.compose.ui.Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    LogsScreen()
+                    LogsScreen()
                 }
             }
         }
