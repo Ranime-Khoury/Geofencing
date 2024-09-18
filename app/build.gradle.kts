@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
     implementation("com.github.anboralabs:spatia-room:0.3.0")
     implementation("com.github.dalgarins:android-spatialite:2.1.2-ndk23-alpha")
 
