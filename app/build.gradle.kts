@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.geofencing"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -70,4 +70,11 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
     implementation("com.github.anboralabs:spatia-room:0.3.0")
+
+    implementation("androidx.compose.ui:ui:1.7.1")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
 }
