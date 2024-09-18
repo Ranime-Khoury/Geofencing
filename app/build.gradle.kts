@@ -70,6 +70,7 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
     implementation("com.github.anboralabs:spatia-room:0.3.0")
+    implementation("com.github.dalgarins:android-spatialite:2.1.2-ndk23-alpha")
 
     implementation("androidx.compose.ui:ui:1.7.1")
     implementation("androidx.compose.material3:material3:1.3.0")
