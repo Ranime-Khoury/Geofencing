@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.geofencing.data.model.Device
+import com.example.geofencing.data.model.DevicePositions
 import com.example.geofencing.data.model.Location
 import com.example.geofencing.data.model.Log
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ interface LogDao {
     suspend fun insertLocation(location: Location)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDevice(device: Device)
+    suspend fun insertDevicePosition(devicePosition: DevicePositions)
 
     @Query("SELECT * FROM ${Log.TABLE_NAME}")
     fun getAllLogs(): Flow<List<Log>>
