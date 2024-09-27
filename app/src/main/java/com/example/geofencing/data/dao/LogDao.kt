@@ -21,6 +21,6 @@ interface LogDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDevicePosition(devicePosition: DevicePositions)
 
-    @Query("SELECT * FROM ${Log.TABLE_NAME}")
+    @Query("SELECT * FROM ${Log.TABLE_NAME} ORDER BY id DESC")
     fun getAllLogs(): Flow<List<Log>>
 }
