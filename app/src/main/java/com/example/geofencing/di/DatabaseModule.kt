@@ -24,13 +24,15 @@ object DatabaseModule {
             AppDatabase.DB_NAME
         ).addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
-                // Initialize Spatialite
                 db.query("SELECT InitSpatialMetaData();").moveToNext()
-                // Recover geometry column and create a spatial index
-//                db.query("SELECT RecoverGeometryColumn('geo_posts', 'location', 4326, 'POINT', 'XY');")
-//                    .moveToNext()
-//                db.query("SELECT CreateSpatialIndex('geo_posts', 'location');")
-//                    .moveToNext()
+
+                db.query("SELECT RecoverGeometryColumn('device_positions', 'position', 4326, 'POINT', 'XY');")
+                    .moveToNext()
+                db.query("SELECT CreateSpatialIndex('device_positions', 'position');").moveToNext()
+
+                db.query("SELECT RecoverGeometryColumn('location', 'polygon', 4326, 'POLYGON', 'XY');")
+                    .moveToNext()
+                db.query("SELECT CreateSpatialIndex('location', 'polygon');").moveToNext()
             }
         }).build()
     }
