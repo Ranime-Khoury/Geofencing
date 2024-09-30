@@ -9,55 +9,55 @@ import com.example.geofencing.data.model.Location
 val dataDevicePositions = listOf(
     DevicePositions(
         id = 1,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:00",
         position = Point(15.0, 15.0) // Inside Location 1
     ),
     DevicePositions(
         id = 2,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:05",
         position = Point(17.0, 17.0) // Near the edge of Location 1
     ),
     DevicePositions(
         id = 3,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:10",
         position = Point(20.0, 10.0) // Exiting Location 1
     ),
     DevicePositions(
         id = 4,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:15",
         position = Point(30.0, 30.0) // Inside Location 2
     ),
     DevicePositions(
         id = 5,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:20",
         position = Point(35.0, 35.0) // Near the edge of Location 2
     ),
     DevicePositions(
         id = 6,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:25",
         position = Point(40.0, 40.0) // Exiting Location 2
     ),
     DevicePositions(
         id = 7,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:30",
         position = Point(55.0, 52.0) // Inside Location 3
     ),
     DevicePositions(
         id = 8,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:35",
         position = Point(57.0, 55.0) // Near the edge of Location 3
     ),
     DevicePositions(
         id = 9,
-        device_id = 1,
+        deviceId = 1,
         timestamp = "2023-09-27T12:00:40",
         position = Point(60.0, 60.0) // Exiting Location 3
     )

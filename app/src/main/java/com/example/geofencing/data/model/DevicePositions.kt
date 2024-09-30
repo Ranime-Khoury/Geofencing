@@ -8,7 +8,7 @@ import com.example.geofencing.data.model.DevicePositions.Companion.TABLE_NAME
 @Entity(tableName = TABLE_NAME)
 data class DevicePositions(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    var device_id: Int,
+    var deviceId: Int,
     var timestamp: String,
     var position: Point
 ) {
