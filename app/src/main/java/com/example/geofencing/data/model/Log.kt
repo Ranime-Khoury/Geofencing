@@ -10,7 +10,7 @@ data class Log(
     var deviceId: Int,
     var locationId: Int,
     var entryTime: String,
-    var exitTime: String
+    var exitTime: String?
 ) {
     companion object {
         const val TABLE_NAME = "log"
