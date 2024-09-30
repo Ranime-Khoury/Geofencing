@@ -66,7 +66,7 @@ val dataDevicePositions = listOf(
 val dataLocations = listOf(
     Location(
         id = 1,
-        name = "Location 1",
+        name = "Coastal Highlands",
         polygon = Polygon(
             listOf(
                 LineString(
@@ -86,7 +86,7 @@ val dataLocations = listOf(
     ),
     Location(
         id = 2,
-        name = "Location 2",
+        name = "Mount Cascade Range",
         polygon = Polygon(
             listOf(
                 LineString(
@@ -106,7 +106,7 @@ val dataLocations = listOf(
     ),
     Location(
         id = 3,
-        name = "Location 3",
+        name = "Serene Valley",
         polygon = Polygon(
             listOf(
                 LineString(
