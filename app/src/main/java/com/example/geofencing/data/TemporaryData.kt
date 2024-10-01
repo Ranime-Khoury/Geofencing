@@ -56,10 +56,22 @@ val dataDevicePositions = listOf(
         position = Point(57.0, 55.0) // Near the edge of Location 3
     ),
     DevicePositions(
-        id = 9,
+        id = 10,
         deviceId = 1,
-        timestamp = "2023-09-27T12:00:40",
-        position = Point(60.0, 60.0) // Exiting Location 3
+        timestamp = "2023-09-27T12:00:45",
+        position = Point(53.0, 54.0) // Inside Location 3
+    ),
+    DevicePositions(
+        id = 11,
+        deviceId = 1,
+        timestamp = "2023-09-27T12:00:50",
+        position = Point(59.0, 57.0) // Near the edge of Location 3
+    ),
+    DevicePositions(
+        id = 12,
+        deviceId = 1,
+        timestamp = "2023-09-27T12:00:55",
+        position = Point(61.0, 61.0) // Exiting Location 3
     )
 )
 

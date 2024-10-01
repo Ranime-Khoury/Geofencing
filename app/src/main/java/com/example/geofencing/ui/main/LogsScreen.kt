@@ -121,6 +121,7 @@ fun LogItem(log: Log) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+                .padding(start = 10.dp)
         ) {
             Row(horizontalArrangement = Arrangement.Center) {
                 Box(

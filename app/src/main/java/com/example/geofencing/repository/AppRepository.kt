@@ -1,5 +1,7 @@
 package com.example.geofencing.repository
 
+import KalmanFilter
+import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
 import com.example.geofencing.data.dao.LogDao
 import com.example.geofencing.data.dataDevicePositions
@@ -28,6 +30,8 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
     private var previousLocation: Location? = null
     private var lastEntryTime = "0000-01-01T00:00:00"
 
+    private val kalmanFilter = KalmanFilter()
+
     init {
         GlobalScope.launch(Dispatchers.IO) {
             val unfinishedLog: Log? = dao.getUnfinishedLog()
@@ -50,7 +54,13 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
     }
 
     private suspend fun handleNewPosition(currentPosition: DevicePositions) {
-//      TODO("kalman")
+        val measurement = doubleArrayOf(currentPosition.position.x, currentPosition.position.y)
+        kalmanFilter.predict()
+        kalmanFilter.update(measurement)
+
+        val estimatedPosition = kalmanFilter.getCurrentEstimate()
+        currentPosition.position = Point(estimatedPosition[0], estimatedPosition[1])
+
         previousLocation?.let {
             if (
                 !dao.isPointWithinPolygon(
