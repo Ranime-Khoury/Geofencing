@@ -68,6 +68,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                         Log(
                             deviceId = currentPosition.deviceId,
                             locationId = it.id,
+                            locationName = it.name,
                             entryTime = lastEntryTime,
                             exitTime = null
                         )
@@ -87,6 +88,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                     Log(
                         deviceId = currentPosition.deviceId,
                         locationId = it.id,
+                        locationName = it.name,
                         entryTime = lastEntryTime,
                         exitTime = null
                     )
