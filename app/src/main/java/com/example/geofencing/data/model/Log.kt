@@ -9,6 +9,7 @@ data class Log(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var deviceId: Int,
     var locationId: Int,
+    var locationName: String,
     var entryTime: String,
     var exitTime: String?
 ) {
