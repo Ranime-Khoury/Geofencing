@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.SkipQueryVerification
+import co.anbora.labs.spatia.geometry.Point
 import co.anbora.labs.spatia.geometry.Polygon
 import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
@@ -52,18 +53,17 @@ interface LogDao {
 
 
     // Geometry
-    @Query("SELECT ST_Within(GeomFromText('POINT(' || :x || ' ' || :y || ')', 4326), :polygon)")
+    @Query("SELECT ST_Within(:point, :polygon)")
     @SkipQueryVerification
-    suspend fun isPointWithinPolygon(x: Double, y: Double, polygon: Polygon): Boolean
-
+    suspend fun isPointWithinPolygon(point: Point, polygon: Polygon): Boolean
     @Query(
         """
         SELECT *
         FROM ${Area.TABLE_NAME} 
-        WHERE ST_Within(GeomFromText('POINT(' || :x || ' ' || :y || ')', 4326), polygon)
+        WHERE ST_Within(:point, polygon)
         LIMIT 1
     """
     )
     @SkipQueryVerification
-    fun findContainingArea(x: Double, y: Double): Area?
+    fun findContainingArea(point: Point): Area?
 }

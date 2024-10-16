@@ -50,8 +50,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
         previousArea?.let {
             if (
                 !dao.isPointWithinPolygon(
-                    currentPosition.position.x,
-                    currentPosition.position.y,
+                    currentPosition.position,
                     it.polygon
                 )
             ) {
@@ -76,7 +75,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
             }
         } ?: run {
             previousArea =
-                dao.findContainingArea(currentPosition.position.x, currentPosition.position.y)
+                dao.findContainingArea(currentPosition.position)
             previousArea?.let {
                 lastEntryTime = currentPosition.timestamp
                 dao.insertLog(
@@ -92,7 +91,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
     }
 
     private fun isDurationSufficient(entryTime: String, exitTime: String): Boolean {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         val entryDateTime = LocalDateTime.parse(entryTime, formatter)
         val exitDateTime = LocalDateTime.parse(exitTime, formatter)
