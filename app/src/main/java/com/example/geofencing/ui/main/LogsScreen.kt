@@ -97,7 +97,7 @@ fun LogItem(log: Log) {
                     .padding(16.dp)
             ) {
                 Text(
-                    text = log.locationName,
+                    text = log.areaName,
                     color = Color.Transparent,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -134,7 +134,7 @@ fun LogItem(log: Log) {
 
                 Column {
                     Text(
-                        text = log.locationName,
+                        text = log.areaName,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold

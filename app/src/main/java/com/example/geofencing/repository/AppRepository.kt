@@ -4,9 +4,9 @@ import KalmanFilter
 import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
 import com.example.geofencing.data.dao.LogDao
-import com.example.geofencing.data.model.DevicePositions
-import com.example.geofencing.data.model.Location
+import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
+import com.example.geofencing.data.model.Position
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +24,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
     private val dao: LogDao = appDatabase.getLogDao()
     val logs: Flow<List<Log>> = dao.getAllLogs()
 
-    private var previousLocation: Location? = null
+    private var previousArea: Area? = null
     private var lastEntryTime = "0000-01-01T00:00:00"
 
     private val kalmanFilter = KalmanFilter()
@@ -33,13 +33,13 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
         GlobalScope.launch(Dispatchers.IO) {
             val unfinishedLog: Log? = dao.getUnfinishedLog()
             unfinishedLog?.let {
-                previousLocation = dao.getLocationById(unfinishedLog.locationId)
+                previousArea = dao.getAreaById(unfinishedLog.areaId)
                 lastEntryTime = unfinishedLog.entryTime
             }
         }
     }
 
-    private suspend fun handleNewPosition(currentPosition: DevicePositions) {
+    private suspend fun handleNewPosition(currentPosition: Position) {
         val measurement = doubleArrayOf(currentPosition.position.x, currentPosition.position.y)
         kalmanFilter.predict()
         kalmanFilter.update(measurement)
@@ -47,7 +47,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
         val estimatedPosition = kalmanFilter.getCurrentEstimate()
         currentPosition.position = Point(estimatedPosition[0], estimatedPosition[1])
 
-        previousLocation?.let {
+        previousArea?.let {
             if (
                 !dao.isPointWithinPolygon(
                     currentPosition.position.x,
@@ -62,29 +62,27 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                 ) {
                     dao.deleteLog(
                         Log(
-                            deviceId = currentPosition.deviceId,
-                            locationId = it.id,
-                            locationName = it.name,
+                            areaId = it.id,
+                            areaName = it.name,
                             entryTime = lastEntryTime,
                             exitTime = null
                         )
                     )
                 } else {
-                    dao.updateLog(currentPosition.deviceId, currentPosition.timestamp)
+                    dao.updateLog(currentPosition.timestamp)
                 }
-                previousLocation = null
+                previousArea = null
                 handleNewPosition(currentPosition)
             }
         } ?: run {
-            previousLocation =
-                dao.findContainingLocation(currentPosition.position.x, currentPosition.position.y)
-            previousLocation?.let {
+            previousArea =
+                dao.findContainingArea(currentPosition.position.x, currentPosition.position.y)
+            previousArea?.let {
                 lastEntryTime = currentPosition.timestamp
                 dao.insertLog(
                     Log(
-                        deviceId = currentPosition.deviceId,
-                        locationId = it.id,
-                        locationName = it.name,
+                        areaId = it.id,
+                        areaName = it.name,
                         entryTime = lastEntryTime,
                         exitTime = null
                     )

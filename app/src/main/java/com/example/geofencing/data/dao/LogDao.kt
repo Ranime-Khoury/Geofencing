@@ -7,25 +7,25 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.SkipQueryVerification
 import co.anbora.labs.spatia.geometry.Polygon
-import com.example.geofencing.data.model.DevicePositions
-import com.example.geofencing.data.model.Location
+import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
+import com.example.geofencing.data.model.Position
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LogDao {
 
-    //devicePositions
+    //Position
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDevicePosition(devicePosition: DevicePositions)
+    suspend fun insertPosition(position: Position)
 
 
-    // Location
+    // Area
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: Location)
+    suspend fun insertArea(area: Area)
 
-    @Query("SELECT * FROM ${Location.TABLE_NAME} WHERE id = :id")
-    suspend fun getLocationById(id: Int): Location
+    @Query("SELECT * FROM ${Area.TABLE_NAME} WHERE id = :id")
+    suspend fun getAreaById(id: Int): Area
 
 
     // Log
@@ -36,10 +36,10 @@ interface LogDao {
         """
         UPDATE ${Log.TABLE_NAME} 
         SET exitTime = :newExitTime 
-        WHERE deviceId = :deviceId AND exitTime IS NULL
+        WHERE exitTime IS NULL
     """
     )
-    suspend fun updateLog(deviceId: Int, newExitTime: String)
+    suspend fun updateLog(newExitTime: String)
 
     @Query("SELECT * FROM ${Log.TABLE_NAME} WHERE exitTime IS NULL ORDER BY id DESC LIMIT 1")
     suspend fun getUnfinishedLog(): Log?
@@ -59,11 +59,11 @@ interface LogDao {
     @Query(
         """
         SELECT *
-        FROM ${Location.TABLE_NAME} 
+        FROM ${Area.TABLE_NAME} 
         WHERE ST_Within(GeomFromText('POINT(' || :x || ' ' || :y || ')', 4326), polygon)
         LIMIT 1
     """
     )
     @SkipQueryVerification
-    fun findContainingLocation(x: Double, y: Double): Location?
+    fun findContainingArea(x: Double, y: Double): Area?
 }

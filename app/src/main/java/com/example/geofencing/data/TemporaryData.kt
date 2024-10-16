@@ -3,11 +3,11 @@ package com.example.geofencing.data
 import co.anbora.labs.spatia.geometry.LineString
 import co.anbora.labs.spatia.geometry.Point
 import co.anbora.labs.spatia.geometry.Polygon
-import com.example.geofencing.data.model.Location
+import com.example.geofencing.data.model.Area
 
-val dataLocations = listOf(
-    Location(
-        id = 1, name = "Area 1", polygon = Polygon(
+val allAreas = listOf(
+    Area(
+        id = 1, name = "Building 1", polygon = Polygon(
             listOf(
                 LineString(
                     listOf(
@@ -21,8 +21,8 @@ val dataLocations = listOf(
             )
         )
     ),
-    Location(
-        id = 2, name = "Area 2", polygon = Polygon(
+    Area(
+        id = 2, name = "Building 2", polygon = Polygon(
             listOf(
                 LineString(
                     listOf(
@@ -36,8 +36,8 @@ val dataLocations = listOf(
             )
         )
     ),
-    Location(
-        id = 3, name = "Area 3", polygon = Polygon(
+    Area(
+        id = 3, name = "Building 3", polygon = Polygon(
             listOf(
                 LineString(
                     listOf(
@@ -51,8 +51,8 @@ val dataLocations = listOf(
             )
         )
     ),
-    Location(
-        id = 4, name = "Area 4", polygon = Polygon(
+    Area(
+        id = 4, name = "Building 4", polygon = Polygon(
             listOf(
                 LineString(
                     listOf(
