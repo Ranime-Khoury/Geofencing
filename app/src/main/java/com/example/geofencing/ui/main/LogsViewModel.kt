@@ -14,11 +14,4 @@ class LogsViewModel @Inject constructor(private val repository: AppRepository) :
 
     val logs = repository.logs;
 
-    init {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.insertAllDataIntoDB()
-            }
-        }
-    }
 }

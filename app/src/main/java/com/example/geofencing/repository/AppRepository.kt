@@ -4,14 +4,11 @@ import KalmanFilter
 import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
 import com.example.geofencing.data.dao.LogDao
-import com.example.geofencing.data.dataDevicePositions
-import com.example.geofencing.data.dataLocations
 import com.example.geofencing.data.model.DevicePositions
 import com.example.geofencing.data.model.Location
 import com.example.geofencing.data.model.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -39,17 +36,6 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                 previousLocation = dao.getLocationById(unfinishedLog.locationId)
                 lastEntryTime = unfinishedLog.entryTime
             }
-        }
-    }
-
-    suspend fun insertAllDataIntoDB() {
-        for (location in dataLocations) {
-            dao.insertLocation(location)
-        }
-        for (devicePosition in dataDevicePositions) {
-            dao.insertDevicePosition(devicePosition)
-            handleNewPosition(devicePosition)
-            delay(5000)
         }
     }
 
