@@ -22,11 +22,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +39,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.geofencing.R
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.ui.main.LogsViewModel
+import java.time.Instant
+import java.time.ZoneId
+
+const val ONE_DAY_MILLIS: Long = 86400000 // one day in milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,8 +72,8 @@ fun LogsScreen(
 
             Column(modifier = Modifier.width(400.dp)) {
                 Text(
-                    text = "text",
-                    color = Color.Red,
+                    text = "hi",
+                    color = Color.Transparent,
                     fontSize = 100.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -99,39 +107,8 @@ fun LogItem(log: Log) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(30.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
-                .blur(radius = 20.dp)
-                .clip(RoundedCornerShape(30.dp))
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = log.areaName,
-                    color = Color.Transparent,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "From: ${java.util.Date(log.entryTime)}",
-                    modifier = Modifier.padding(top = 8.dp),
-                    fontSize = 16.sp,
-                    color = Color.Transparent
-                )
-                Text(
-                    text = "From: ${java.util.Date(log.entryTime)}",
-                    modifier = Modifier.padding(top = 4.dp),
-                    color = Color.Transparent,
-                    fontSize = 16.sp,
-                )
-            }
-        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -168,7 +145,7 @@ fun LogItem(log: Log) {
                             color = MaterialTheme.colorScheme.onSecondary,
                         )
                     } ?: Text(
-                        text = "Still inside the area",
+                        text = "Still inside",
                         modifier = Modifier.padding(top = 4.dp),
                         color = Color.Gray,
                         fontSize = 16.sp,
@@ -176,6 +153,11 @@ fun LogItem(log: Log) {
                 }
             }
         }
+    }
+
+    fun getMidnightMillis(newTime: Long): Long {
+        val instant = Instant.ofEpochMilli(newTime)
+        return instant.atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 }
     
