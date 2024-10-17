@@ -40,7 +40,7 @@ interface LogDao {
         WHERE exitTime IS NULL
     """
     )
-    suspend fun updateLog(newExitTime: String)
+    suspend fun updateLog(newExitTime: Long)
 
     @Query("SELECT * FROM ${Log.TABLE_NAME} WHERE exitTime IS NULL ORDER BY id DESC LIMIT 1")
     suspend fun getUnfinishedLog(): Log?

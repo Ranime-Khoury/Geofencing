@@ -9,8 +9,8 @@ data class Log(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var areaId: Int,
     var areaName: String,
-    var entryTime: String,
-    var exitTime: String?
+    var entryTime: Long,
+    var exitTime: Long?
 ) {
     companion object {
         const val TABLE_NAME = "log"
