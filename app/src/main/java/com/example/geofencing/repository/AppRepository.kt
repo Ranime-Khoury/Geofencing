@@ -85,8 +85,6 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
         } ?: run {
             previousArea =
                 dao.findContainingArea(newPosition.point)
-            android.util.Log.i("mytag", "1")
-
             previousArea?.let {
                 lastEntryTime = newPosition.timestamp
                 dao.insertLog(

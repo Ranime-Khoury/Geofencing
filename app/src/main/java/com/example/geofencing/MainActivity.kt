@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult.lastLocation?.let {
-                    Log.i("mytag", it.time.toString())
                     val newPosition =
                         Position(point = Point(it.latitude, it.longitude), timestamp = it.time)
                     logsViewModel.handleNewPosition(newPosition)
