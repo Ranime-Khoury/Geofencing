@@ -37,19 +37,8 @@ import com.example.geofencing.R
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.ui.main.LogsViewModel
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
 import java.util.Date
 
-const val ONE_DAY_MILLIS: Long = 86400000 // one day in milliseconds
-
-fun getMidnightMillis(newTime: Long): Long {
-    val instant = Instant.ofEpochMilli(newTime)
-    return instant.atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault())
-        .toInstant().toEpochMilli()
-}
-
-@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogsScreen(
@@ -79,17 +68,17 @@ fun LogsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(20.dp)
+                    .padding(horizontal = 20.dp)
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .background(Color.White.copy(0.3f), shape = RoundedCornerShape(8.dp))
+                        .background(Color.White.copy(0.4f), shape = RoundedCornerShape(8.dp))
                 ) {
                     Text(
                         text = newPosition ?: "no position",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.Black,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -97,7 +86,6 @@ fun LogsScreen(
                             .padding(16.dp)
                     )
                 }
-
 
                 LazyColumn {
                     items(logs) { log ->
@@ -130,7 +118,7 @@ fun LogItem(log: Log) {
                 Box(
                     modifier = Modifier
                         .width(3.dp)
-                        .height(110.dp)
+                        .height(80.dp)
                         .background(MaterialTheme.colorScheme.secondary)
                 )
                 Spacer(modifier = Modifier.width(15.dp))
@@ -149,28 +137,39 @@ fun LogItem(log: Log) {
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = "Entry: ${SimpleDateFormat("HH:mm:ss").format(Date(log.entryTime))}",
-                        modifier = Modifier.padding(top = 8.dp),
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondary,
-                    )
-                    log.exitTime?.let {
+                    Row(
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = "Exit: ${SimpleDateFormat("HH:mm:ss").format(Date(it))}",
-                            modifier = Modifier.padding(top = 4.dp),
+                            text = "Entry: ${SimpleDateFormat("HH:mm:ss").format(Date(log.entryTime))}",
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onSecondary,
                         )
-                    } ?: Text(
-                        text = "Still inside",
-                        modifier = Modifier.padding(top = 4.dp),
-                        color = Color.Gray,
-                        fontSize = 16.sp,
-                    )
+                        Text(
+                            text = "|",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        log.exitTime?.let {
+                            Text(
+                                text = "Exit: ${SimpleDateFormat("HH:mm:ss").format(Date(it))}",
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSecondary,
+                            )
+                        } ?: Text(
+                            text = "Still inside the area",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                        )
+                    }
                 }
             }
         }
     }
 }
-    
+
