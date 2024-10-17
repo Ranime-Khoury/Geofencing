@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -34,11 +36,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.geofencing.R
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.ui.main.LogsViewModel
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
+import java.util.Date
 
 const val ONE_DAY_MILLIS: Long = 86400000 // one day in milliseconds
 
+fun getMidnightMillis(newTime: Long): Long {
+    val instant = Instant.ofEpochMilli(newTime)
+    return instant.atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault())
+        .toInstant().toEpochMilli()
+}
+
+@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogsScreen(
@@ -64,30 +75,34 @@ fun LogsScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-
-            Column(modifier = Modifier.width(400.dp)) {
-                Text(
-                    text = "hi",
-                    color = Color.Transparent,
-                    fontSize = 100.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = newPosition ?: "no position",
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(20.dp)
             ) {
-                items(logs) { log ->
-                    LogItem(log)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(Color.White.copy(0.3f), shape = RoundedCornerShape(8.dp))
+                ) {
+                    Text(
+                        text = newPosition ?: "no position",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp)
+                    )
+                }
+
+
+                LazyColumn {
+                    items(logs) { log ->
+                        LogItem(log)
+                    }
                 }
             }
         }
@@ -95,6 +110,7 @@ fun LogsScreen(
 
 }
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun LogItem(log: Log) {
     Box(
@@ -113,8 +129,8 @@ fun LogItem(log: Log) {
             Row(horizontalArrangement = Arrangement.Center) {
                 Box(
                     modifier = Modifier
-                        .width(2.dp)
-                        .height(80.dp)
+                        .width(3.dp)
+                        .height(110.dp)
                         .background(MaterialTheme.colorScheme.secondary)
                 )
                 Spacer(modifier = Modifier.width(15.dp))
@@ -127,14 +143,21 @@ fun LogItem(log: Log) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "From: ${java.util.Date(log.entryTime)}",
+                        text = "Date: ${SimpleDateFormat("EEEE dd MMMM yyyy").format(Date(log.entryTime))}",
+                        modifier = Modifier.padding(top = 8.dp),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Entry: ${SimpleDateFormat("HH:mm:ss").format(Date(log.entryTime))}",
                         modifier = Modifier.padding(top = 8.dp),
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                     log.exitTime?.let {
                         Text(
-                            text = "Till: ${java.util.Date(it)}",
+                            text = "Exit: ${SimpleDateFormat("HH:mm:ss").format(Date(it))}",
                             modifier = Modifier.padding(top = 4.dp),
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onSecondary,
@@ -148,12 +171,6 @@ fun LogItem(log: Log) {
                 }
             }
         }
-    }
-
-    fun getMidnightMillis(newTime: Long): Long {
-        val instant = Instant.ofEpochMilli(newTime)
-        return instant.atZone(ZoneId.systemDefault()).toLocalDate()
-            .atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 }
     
