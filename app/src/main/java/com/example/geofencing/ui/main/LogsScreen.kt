@@ -42,6 +42,7 @@ fun LogsScreen(
     logsViewModel: LogsViewModel = hiltViewModel()
 ) {
     val logs by logsViewModel.logs.collectAsState(initial = emptyList())
+    val newPosition by logsViewModel.newPosition.collectAsState(null)
 
     Scaffold(topBar = {
         TopAppBar(
@@ -60,6 +61,21 @@ fun LogsScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+
+            Column(modifier = Modifier.width(400.dp)) {
+                Text(
+                    text = "text",
+                    color = Color.Red,
+                    fontSize = 100.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = newPosition ?: "no position",
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             LazyColumn(
                 modifier = Modifier
@@ -103,14 +119,13 @@ fun LogItem(log: Log) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "From: ${log.entryTime}",
+                    text = "From: ${java.util.Date(log.entryTime)}",
                     modifier = Modifier.padding(top = 8.dp),
                     fontSize = 16.sp,
-                    color = Color.Transparent,
-
-                    )
+                    color = Color.Transparent
+                )
                 Text(
-                    text = "Till: N/A",
+                    text = "From: ${java.util.Date(log.entryTime)}",
                     modifier = Modifier.padding(top = 4.dp),
                     color = Color.Transparent,
                     fontSize = 16.sp,
@@ -140,20 +155,20 @@ fun LogItem(log: Log) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "From: ${log.entryTime}",
+                        text = "From: ${java.util.Date(log.entryTime)}",
                         modifier = Modifier.padding(top = 8.dp),
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                     log.exitTime?.let {
                         Text(
-                            text = "Till: $it",
+                            text = "Till: ${java.util.Date(it)}",
                             modifier = Modifier.padding(top = 4.dp),
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onSecondary,
                         )
                     } ?: Text(
-                        text = "Till: N/A",
+                        text = "Still inside the area",
                         modifier = Modifier.padding(top = 4.dp),
                         color = Color.Gray,
                         fontSize = 16.sp,

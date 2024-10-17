@@ -3,6 +3,7 @@ package com.example.geofencing.repository
 import KalmanFilter
 import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
+import com.example.geofencing.data.allAreas
 import com.example.geofencing.data.dao.LogDao
 import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
@@ -10,22 +11,24 @@ import com.example.geofencing.data.model.Position
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val MINIMUM_DURATION: Long = 4 // in seconds
+const val MINIMUM_DURATION: Long = 4000 // in milliseconds
 
 @Singleton
 class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
     private val dao: LogDao = appDatabase.getLogDao()
     val logs: Flow<List<Log>> = dao.getAllLogs()
 
+    private val _newPosition = MutableStateFlow<String?>(null)
+    val newPosition: StateFlow<String?> get() = _newPosition
+
     private var previousArea: Area? = null
-    private var lastEntryTime = "0000-01-01T00:00:00"
+    private var lastEntryTime = 0L
 
     private val kalmanFilter = KalmanFilter()
 
@@ -39,26 +42,32 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
         }
     }
 
-    private suspend fun handleNewPosition(currentPosition: Position) {
-        val measurement = doubleArrayOf(currentPosition.position.x, currentPosition.position.y)
+    suspend fun insertAreasIntoDB() {
+        for (area in allAreas) {
+            dao.insertArea(area)
+        }
+    }
+
+    suspend fun handleNewPosition(newPosition: Position) {
+        _newPosition.value = "(${newPosition.point.x}, ${newPosition.point.y})"
+
+        dao.insertPosition(newPosition)
+
+        val measurement = doubleArrayOf(newPosition.point.x, newPosition.point.y)
         kalmanFilter.predict()
         kalmanFilter.update(measurement)
 
         val estimatedPosition = kalmanFilter.getCurrentEstimate()
-        currentPosition.position = Point(estimatedPosition[0], estimatedPosition[1])
+        newPosition.point = Point(estimatedPosition[0], estimatedPosition[1])
 
         previousArea?.let {
             if (
                 !dao.isPointWithinPolygon(
-                    currentPosition.position,
+                    newPosition.point,
                     it.polygon
                 )
             ) {
-                if (!isDurationSufficient(
-                        lastEntryTime,
-                        currentPosition.timestamp
-                    )
-                ) {
+                if (newPosition.timestamp - lastEntryTime < MINIMUM_DURATION) {
                     dao.deleteLog(
                         Log(
                             areaId = it.id,
@@ -68,16 +77,18 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                         )
                     )
                 } else {
-                    dao.updateLog(currentPosition.timestamp)
+                    dao.updateLog(newPosition.timestamp)
                 }
                 previousArea = null
-                handleNewPosition(currentPosition)
+                handleNewPosition(newPosition)
             }
         } ?: run {
             previousArea =
-                dao.findContainingArea(currentPosition.position)
+                dao.findContainingArea(newPosition.point)
+            android.util.Log.i("mytag", "1")
+
             previousArea?.let {
-                lastEntryTime = currentPosition.timestamp
+                lastEntryTime = newPosition.timestamp
                 dao.insertLog(
                     Log(
                         areaId = it.id,
@@ -88,16 +99,5 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                 )
             }
         }
-    }
-
-    private fun isDurationSufficient(entryTime: String, exitTime: String): Boolean {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-        val entryDateTime = LocalDateTime.parse(entryTime, formatter)
-        val exitDateTime = LocalDateTime.parse(exitTime, formatter)
-
-        val duration = Duration.between(entryDateTime, exitDateTime)
-
-        return duration.seconds >= MINIMUM_DURATION
     }
 }
