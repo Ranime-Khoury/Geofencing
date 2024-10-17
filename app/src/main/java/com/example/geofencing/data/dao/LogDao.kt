@@ -56,6 +56,7 @@ interface LogDao {
     @Query("SELECT ST_Within(:point, :polygon)")
     @SkipQueryVerification
     suspend fun isPointWithinPolygon(point: Point, polygon: Polygon): Boolean
+
     @Query(
         """
         SELECT *
