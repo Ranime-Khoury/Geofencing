@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -56,9 +57,15 @@ class MainActivity : ComponentActivity() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult.lastLocation?.let {
-                    val newPosition =
-                        Position(point = Point(it.latitude, it.longitude), timestamp = it.time)
-                    logsViewModel.handleNewPosition(newPosition)
+                    Log.i("mytag", it.toString())
+                    logsViewModel.handleNewPosition(
+                        Position(
+                            point = Point(
+                                it.latitude,
+                                it.longitude
+                            ), timestamp = it.time
+                        )
+                    )
                 }
             }
         }
@@ -74,14 +81,32 @@ class MainActivity : ComponentActivity() {
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
+        //// TODO: ACCESS_BACKGROUND_LOCATION ??
         ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
+            val locationPermissionRequest = registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissions ->
+                if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
+                    fusedLocationProviderClient.requestLocationUpdates(
+                        locationRequest,
+                        locationCallback,
+                        null
+                    )
+                }
+            }
+            locationPermissionRequest.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
-            return
+        } else {
+            fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                null
+            )
         }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
     override fun onDestroy() {
