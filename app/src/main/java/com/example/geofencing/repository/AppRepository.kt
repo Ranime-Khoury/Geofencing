@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val MINIMUM_DURATION: Long = 4000 // in milliseconds
+const val LIMIT_DURATION: Long = 15000 // in milliseconds
 
 @Singleton
 class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
@@ -67,7 +67,9 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                     it.polygon
                 )
             ) {
-                if (newPosition.timestamp - lastEntryTime < MINIMUM_DURATION) {
+                if (newPosition.timestamp - lastEntryTime < LIMIT_DURATION) {
+                    android.util.Log.i("mytag", "deleted log")
+
                     dao.deleteLog(
                         Log(
                             areaId = it.id,
@@ -77,16 +79,23 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                         )
                     )
                 } else {
+                    android.util.Log.i("mytag", "updated log")
+
                     dao.updateLog(newPosition.timestamp)
                 }
                 previousArea = null
                 handleNewPosition(newPosition)
             }
         } ?: run {
+            android.util.Log.i("mytag", "entered insert phase")
+
             previousArea =
                 dao.findContainingArea(newPosition.point)
+            android.util.Log.i("mytag", if (previousArea != null) "in" else "out")
+
             previousArea?.let {
                 lastEntryTime = newPosition.timestamp
+                android.util.Log.i("mytag", "will insert log")
                 dao.insertLog(
                     Log(
                         areaId = it.id,
@@ -95,6 +104,10 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                         exitTime = null
                     )
                 )
+                android.util.Log.i("mytag", "log successfully inserted")
+            } ?: {
+                android.util.Log.i("mytag", "no area")
+
             }
         }
     }
