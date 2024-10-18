@@ -70,14 +70,7 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                 if (newPosition.timestamp - lastEntryTime < LIMIT_DURATION) {
                     android.util.Log.i("mytag", "deleted log")
 
-                    dao.deleteLog(
-                        Log(
-                            areaId = it.id,
-                            areaName = it.name,
-                            entryTime = lastEntryTime,
-                            exitTime = null
-                        )
-                    )
+                    dao.deleteLog(lastEntryTime)
                 } else {
                     android.util.Log.i("mytag", "updated log")
 

@@ -1,7 +1,6 @@
 package com.example.geofencing.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -45,8 +44,8 @@ interface LogDao {
     @Query("SELECT * FROM ${Log.TABLE_NAME} WHERE exitTime IS NULL ORDER BY id DESC LIMIT 1")
     suspend fun getUnfinishedLog(): Log?
 
-    @Delete
-    suspend fun deleteLog(log: Log)
+    @Query("DELETE FROM Log WHERE entryTime = :entryTime")
+    suspend fun deleteLog(entryTime: Long)
 
     @Query("SELECT * FROM ${Log.TABLE_NAME} ORDER BY id DESC")
     fun getAllLogs(): Flow<List<Log>>
