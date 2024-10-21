@@ -3,8 +3,8 @@ package com.example.geofencing.repository
 import KalmanFilter
 import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
+import com.example.geofencing.data.LogDao
 import com.example.geofencing.data.allAreas
-import com.example.geofencing.data.dao.LogDao
 import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.data.model.Position

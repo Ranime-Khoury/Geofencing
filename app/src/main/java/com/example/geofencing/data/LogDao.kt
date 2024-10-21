@@ -1,4 +1,4 @@
-package com.example.geofencing.data.dao
+package com.example.geofencing.data
 
 import androidx.room.Dao
 import androidx.room.Insert

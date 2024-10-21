@@ -4,7 +4,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.anbora.labs.spatia.geometry.GeometryConverters
-import com.example.geofencing.data.dao.LogDao
 import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.data.model.Position
