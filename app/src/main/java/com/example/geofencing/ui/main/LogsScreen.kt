@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -85,6 +86,13 @@ fun LogsScreen(
                             .align(Alignment.Center)
                             .padding(16.dp)
                     )
+                }
+
+                // UI Button to trigger log operation
+                Button(onClick = {
+                    logsViewModel.logDatabaseEntries() // Trigger log generation
+                }) {
+                    Text("Testing button to create log")
                 }
 
                 LazyColumn {

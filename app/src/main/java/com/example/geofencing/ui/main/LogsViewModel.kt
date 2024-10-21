@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LogsViewModel @Inject constructor(private val repository: AppRepository) : ViewModel() {
 
-    val logs = repository.logs;
+    val logs = repository.logs
     val newPosition = repository.newPosition
 
     init {
@@ -28,6 +28,14 @@ class LogsViewModel @Inject constructor(private val repository: AppRepository) :
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 repository.handleNewPosition(newPosition)
+            }
+        }
+    }
+
+    fun logDatabaseEntries() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.logDatabaseEntries()
             }
         }
     }

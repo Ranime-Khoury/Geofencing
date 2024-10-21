@@ -50,6 +50,8 @@ interface LogDao {
     @Query("SELECT * FROM ${Log.TABLE_NAME} ORDER BY id DESC")
     fun getAllLogs(): Flow<List<Log>>
 
+    @Query("SELECT * FROM ${Log.TABLE_NAME}")
+    fun getAllEntries(): List<Log>
 
     // Geometry
     @Query("SELECT ST_Within(:point, :polygon)")

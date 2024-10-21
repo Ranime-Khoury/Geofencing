@@ -1,6 +1,7 @@
 package com.example.geofencing.repository
 
 import KalmanFilter
+import android.content.Context
 import co.anbora.labs.spatia.geometry.Point
 import com.example.geofencing.data.AppDatabase
 import com.example.geofencing.data.LogDao
@@ -8,19 +9,29 @@ import com.example.geofencing.data.allAreas
 import com.example.geofencing.data.model.Area
 import com.example.geofencing.data.model.Log
 import com.example.geofencing.data.model.Position
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 const val LIMIT_DURATION: Long = 15000 // in milliseconds
 
 @Singleton
-class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
+class AppRepository @Inject constructor(
+    private val appDatabase: AppDatabase,
+    @ApplicationContext private val application: Context
+) {
     private val dao: LogDao = appDatabase.getLogDao()
     val logs: Flow<List<Log>> = dao.getAllLogs()
 
@@ -102,6 +113,43 @@ class AppRepository @Inject constructor(private val appDatabase: AppDatabase) {
                 android.util.Log.i("mytag", "no area")
 
             }
+        }
+    }
+
+    suspend fun logDatabaseEntries() {
+        val entries = dao.getAllEntries()
+
+        val logData = StringBuilder()
+        for (entry in entries) {
+            logData.append(
+                "id: ${entry.id}, areaId: ${entry.areaId}, areaName: ${entry.areaName}, entryTime: ${
+                    SimpleDateFormat(
+                        "dd MMM yyyy HH:mm:ss",
+                        Locale.getDefault()
+                    ).format(Date(entry.entryTime))
+                }, exitTime: ${
+                    entry.exitTime?.let {
+                        SimpleDateFormat(
+                            "dd MMM yyyy HH:mm:ss",
+                            Locale.getDefault()
+                        ).format(Date(it)) ?: "Still inside the area"
+                    }
+                }\n"
+            )
+        }
+        writeLogToFile(logData.toString())
+    }
+
+    private fun writeLogToFile(logData: String) {
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val logFile = File(application.getExternalFilesDir(null), "database_log_$timestamp.log")
+        try {
+            FileWriter(logFile, true).use { writer ->
+                writer.append(logData)
+                writer.flush()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace() // Handle exceptions
         }
     }
 }
