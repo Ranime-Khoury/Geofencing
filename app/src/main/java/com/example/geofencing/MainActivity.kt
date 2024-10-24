@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.geofencing.ui.theme.GeofencingTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,8 +37,14 @@ class MainActivity : ComponentActivity() {
         if (!hasLocationPermissions()) {
             requestLocationPermissions()
         }
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()
+        ) {
+            requestNotificationPermission()
+        }
 
-        if (hasLocationPermissions()) {
+        if (hasLocationPermissions() && NotificationManagerCompat.from(this)
+                .areNotificationsEnabled()
+        ) {
             startLocationService()
         }
     }
