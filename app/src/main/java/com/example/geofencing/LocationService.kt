@@ -56,7 +56,6 @@ class LocationService : Service() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        //// TODO: fix error -> Suppressing notification from package com.example.geofencing by user request
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
