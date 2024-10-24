@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,11 +33,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        if (hasLocationPermissions()) {
-            startLocationService()
-        } else {
+        if (!hasLocationPermissions()) {
             requestLocationPermissions()
         }
+
+        if (hasLocationPermissions()) {
+            startLocationService()
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        }
+        startActivity(intent)
     }
 
     private fun hasLocationPermissions(): Boolean {
