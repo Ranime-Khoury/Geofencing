@@ -25,7 +25,7 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val LIMIT_DURATION: Long = 15000 // in milliseconds
+const val LIMIT_DURATION: Long = 30000 // in milliseconds
 
 @Singleton
 class AppRepository @Inject constructor(
